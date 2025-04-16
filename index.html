@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00aaff">
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shape Flow</title>
+  <style>
+    /* Import Pixel Font */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #111;
+      font-family: 'Press Start 2P', cursive;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    /* Update the canvas border to be thinner on the sides and deeper at the bottom */
+    canvas {
+      border-top: 20px solid green; /* Thicker top border */
+      border-bottom: 60px solid green; /* Deeper bottom border to fit buttons */
+      border-left: 10px solid green; /* Thinner left border */
+      border-right: 10px solid green; /* Thinner right border */
+      background-color: #add8e6;
+      display: block; /* Ensure it's visible */
+    }
+
+    #titleScreen, #gameOverScreen, #creditsScreen {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+      color: white;
+    }
+
+    #titleScreen h1 {
+      font-size: 30px; /* Smaller title */
+      margin: 20px;
+    }
+
+    #titleScreen p {
+      font-size: 12px; /* Smaller text */
+      margin-bottom: 20px;
+    }
+  
+     #creditsButton {
+     margin-top: 15px; /* or 15px, 20px etc. depending how much space you want */
+}
+
+    #titleScreen button, #gameOverScreen button, #creditsScreen button {
+      font-size: 12px; /* Smaller button font */
+      padding: 6px 30px;  /* Smaller button padding */
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 0px; /* Square buttons */
+      cursor: pointer;
+      width: auto;
+    }
+
+    #gameCanvas {
+      position: relative;
+    }
+
+    #gameOverScreen {
+      display: none;
+    }
+
+    /* Larger Arrow Pixelated Button Style */
+    .arrow-button {
+      position: absolute;
+      bottom: 10px; /* Move to the bottom of the screen */
+      width: 40px; /* Increased width */
+      height: 40px; /* Increased height */
+      font-size: 22px; /* Increased font size */
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 0px; /* Square buttons */
+      cursor: pointer;
+      z-index: 5;
+      display: none; /* Initially hidden */
+    }
+
+    #leftArrow {
+      left: 20px; /* Move to the bottom-left corner */
+    }
+
+    #rightArrow {
+      right: 20px; /* Move to the bottom-right corner */
+    }
+
+    #scoreTimeDisplay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 8px; /* Smaller font size */
+      z-index: 5;
+      display: none;
+    }
+
+    /* Pixelated look for the buttons */
+    button {
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
+    }
+
+    /* Home Button - Square */
+    #homeButton {
+      font-size: 12px; /* Smaller font size */
+      width: 100px; /* Smaller button width */
+      height: 30px; /* Smaller button height */
+      background-color: #4caf50;
+      color: white;
+      border-radius: 0px; /* Square button */
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Version Text Style */
+    #versionText {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+      font-size: 8px; /* Smaller font size */
+      z-index: 10;
+    }
+
+    #creditsScreen p {
+      font-size: 12px;
+      margin: 10px 0;
+    }
+  
+  
+
+  </style>
+</head>
+<body>
+
+<!-- Title Screen -->
+<div id="titleScreen">
+  <h1>Down Stream</h1>
+  <p></p>
+  <button id="homeButton" onclick="startGame()">Start Game</button>
+  <button id="creditsButton" onclick="showCredits()">Credits</button> <!-- New Credits Button -->
+  <!-- Version Text -->
+  <div id="versionText">Version: beta.1</div>
+</div>
+
+<!-- Game Over Screen -->
+<div id="gameOverScreen">
+  <p>Game Over!</p>
+  <p>Your score: <span id="scoreDisplay"></span></p>
+  <button id="homeButton" onclick="startGame()">Play Again</button>
+  <p></p>
+  <button id="backButton" onclick="backToTitle()">Title</button>
+</div>
+
+<!-- Credits Screen -->
+<div id="creditsScreen" style="display:none;">
+  <h2>Credits</h2>
+  <p>Developed by Ethan Kennedy</p>
+  <p>Special thanks to:</p>
+  <p>ChatGPT</p>
+  <p>Person 2</p>
+  <button id="backButton" onclick="backToTitle()">Back</button> <!-- Back Button -->
+</div>
+
+<!-- Game Canvas and Buttons -->
+<div style="position: relative;">
+  <canvas id="gameCanvas"></canvas>
+  <button id="leftArrow" class="arrow-button" onmousedown="moveLeft(true)" onmouseup="moveLeft(false)" ontouchstart="moveLeft(true)" ontouchend="moveLeft(false)">&lt;</button>
+  <button id="rightArrow" class="arrow-button" onmousedown="moveRight(true)" onmouseup="moveRight(false)" ontouchstart="moveRight(true)" ontouchend="moveRight(false)">&gt;</button>
+  <div id="scoreTimeDisplay">
+    Score: <span id="scoreDisplayText">0</span> | Time: <span id="timeDisplay">0</span> sec
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let player, obstacles, score, gameOver, speed, obstacleInterval, startTime, elapsedTime;
+  let moveDirection = 0;  // 0 means no movement, -1 left, 1 right
+
+  function resizeCanvas() {
+    const aspectRatio = 6 / 9;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let newWidth = windowWidth - 20;
+    let newHeight = newWidth / aspectRatio;
+
+    if (newHeight > windowHeight - 120) {
+      newHeight = windowHeight - 120;
+      newWidth = newHeight * aspectRatio;
+    }
+
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+
+    document.getElementById("leftArrow").style.bottom = "10px";
+    document.getElementById("rightArrow").style.bottom = "10px";
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function startGame() {
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("creditsScreen").style.display = "none"; // Hide credits
+    canvas.style.display = "block";
+    document.getElementById("scoreTimeDisplay").style.display = "block";
+    document.getElementById("leftArrow").style.display = "block";
+    document.getElementById("rightArrow").style.display = "block";
+
+    player = {
+      x: canvas.width / 2,
+      y: canvas.height - 40,
+      size: 20,
+      color: "Blue"
+    };
+
+    obstacles = [];
+    score = 0;
+    speed = 4;
+    gameOver = false;
+
+    startTime = Date.now();
+    elapsedTime = 0;
+
+    clearInterval(obstacleInterval);
+    obstacleInterval = setInterval(spawnObstacle, 1000);
+
+    requestAnimationFrame(update);
+  }
+
+  function showCredits() {
+    document.getElementById("titleScreen").style.display = "none";
+    document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("creditsScreen").style.display = "block"; // Show credits
+  }
+
+  function backToTitle() {
+    document.getElementById("creditsScreen").style.display = "none";
+    document.getElementById("gameOverScreen").style.display = "none";
+    document.getElementById("titleScreen").style.display = "block"; // Show title screen
+  }
+
+  function spawnObstacle() {
+    if (gameOver) return;
+    const size = Math.random() * 20 + 10;
+    const x = Math.random() * (canvas.width - 80 - size) + 50;
+    const type = ["square", "pentagon", "triangle"][Math.floor(Math.random() * 3)];
+    obstacles.push({ x, y: -size, size, type, speed });
+
+    const spawnInterval = Math.max(500, 1000 - score * 50);
+    clearInterval(obstacleInterval);
+    obstacleInterval = setInterval(spawnObstacle, spawnInterval);
+
+    speed = Math.min(10, 4 + score * 0.05);
+  }
+
+  function drawPlayer() {
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y - player.size);
+    ctx.lineTo(player.x - player.size, player.y + player.size);
+    ctx.lineTo(player.x + player.size, player.y + player.size);
+    ctx.closePath();
+    ctx.fillStyle = player.color;
+    ctx.fill();
+  }
+
+  function drawObstacles() {
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const o = obstacles[i];
+      ctx.beginPath();
+
+      if (o.type === "square") {
+        ctx.rect(o.x, o.y, Math.floor(o.size), Math.floor(o.size));
+      } else if (o.type === "pentagon") {
+        const angle = (2 * Math.PI) / 5;
+        const centerX = o.x + o.size / 2;
+        const centerY = o.y + o.size / 2;
+        ctx.moveTo(centerX + o.size * Math.cos(0), centerY + o.size * Math.sin(0));
+        for (let j = 1; j < 5; j++) {
+          ctx.lineTo(centerX + o.size * Math.cos(j * angle), centerY + o.size * Math.sin(j * angle));
+        }
+        ctx.closePath();
+      } else if (o.type === "triangle") {
+        ctx.moveTo(o.x, o.y + o.size);
+        ctx.lineTo(o.x + o.size / 2, o.y);
+        ctx.lineTo(o.x + o.size, o.y + o.size);
+        ctx.closePath();
+      }
+
+      ctx.fillStyle = "red";
+      ctx.fill();
+      o.y += speed;
+
+      if (o.y > canvas.height) {
+        obstacles.splice(i, 1);
+        score++;
+        continue;
+      }
+
+      const triangle = [
+        { x: player.x, y: player.y - player.size },
+        { x: player.x - player.size, y: player.y + player.size },
+        { x: player.x + player.size, y: player.y + player.size }
+      ];
+
+      if (o.type === "pentagon") {
+        const dx = player.x - (o.x + o.size / 2);
+        const dy = player.y - (o.y + o.size / 2);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < player.size + o.size / 2) {
+          endGame();
+          return;
+        }
+      } else {
+        const points = [
+          { x: o.x, y: o.y },
+          { x: o.x + o.size, y: o.y },
+          { x: o.x, y: o.y + o.size },
+          { x: o.x + o.size, y: o.y + o.size },
+          { x: o.x + o.size / 2, y: o.y + o.size / 2 }
+        ];
+        for (const p of points) {
+          if (pointInTriangle(p, triangle[0], triangle[1], triangle[2])) {
+            endGame();
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  function pointInTriangle(p, a, b, c) {
+    const area = 0.5 * (-b.y * c.x + a.y * (-b.x + c.x) + a.x * (b.y - c.y) + b.x * c.y);
+    const s = (1 / (2 * area)) * (a.y * c.x - a.x * c.y + (c.y - a.y) * p.x + (a.x - c.x) * p.y);
+    const t = (1 / (2 * area)) * (a.x * b.y - a.y * b.x + (a.y - b.y) * p.x + (b.x - a.x) * p.y);
+    return s > 0 && t > 0 && 1 - s - t > 0;
+  }
+
+  function moveLeft(isPressed) {
+    moveDirection = isPressed ? -1 : 0;
+  }
+
+  function moveRight(isPressed) {
+    moveDirection = isPressed ? 1 : 0;
+  }
+
+  function update() {
+    if (gameOver) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlayer();
+    drawObstacles();
+
+    if (moveDirection === -1 && player.x - player.size > 0) {
+      player.x -= 5;
+    } else if (moveDirection === 1 && player.x + player.size < canvas.width) {
+      player.x += 5;
+    }
+
+    document.getElementById("scoreDisplayText").textContent = score;
+    elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById("timeDisplay").textContent = elapsedTime;
+
+    requestAnimationFrame(update);
+  }
+
+  function endGame() {
+    gameOver = true;
+    clearInterval(obstacleInterval);
+    document.getElementById("gameOverScreen").style.display = "block";
+    document.getElementById("scoreDisplay").textContent = score;
+  }
+</script>
+  
+  
+  
+</body>
+</html>
