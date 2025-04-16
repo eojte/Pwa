@@ -2,7 +2,7 @@
   "name": "Down Stream",
   "short_name": "Stream",
   "start_url": "/Pwa/",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
   "orientation": "portrait",
