@@ -2,7 +2,7 @@
   "name": "Down Stream",
   "short_name": "Stream",
   "start_url": "index.html?fullscreen=true",
-  "display": "fullscreen",
+  "display": "fullscreen",  // Fullscreen mode
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
   "orientation": "portrait",
@@ -17,5 +17,13 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "display_override": [
+    "window-controls-overlay"
+  ],
+  "lang": "en",
+  "dir": "auto",
+  "categories": [
+    "games"
   ]
 }
