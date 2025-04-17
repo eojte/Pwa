@@ -3,8 +3,12 @@
   "short_name": "Stream",
   "start_url": "index.html?fullscreen=true",
   "scope": "./",
-  "display": "fullscreen",
-  "display_override": ["window-controls-overlay", "fullscreen", "standalone"],
+  "display": "minimal-ui",
+  "display_override": [
+    "window-controls-overlay",
+    "fullscreen",
+    "standalone"
+  ],
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
   "orientation": "portrait",
@@ -22,8 +26,10 @@
   ],
   "lang": "en",
   "dir": "auto",
-  "categories": ["games"],
-  "related_applications": [],
+  "categories": [
+    "games"
+  ],
   "prefer_related_applications": false,
-  "scope_extensions": []
+  "description": "A small fun arcade-indie game",
+  "iarc_rating_id": "3"
 }
