@@ -411,23 +411,24 @@
 </script>
 
 <script>
+  function goFullscreen() {
+    const el = document.documentElement;
+    const request = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (request) request.call(el);
+  }
+
+  // Try to trigger fullscreen as soon as possible
   window.addEventListener("load", () => {
-    const elem = document.documentElement;
-    
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen().catch(console.warn);
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
+    goFullscreen();
+    setTimeout(goFullscreen, 500); // Retry just in case
   });
+
+  // Fallback: user taps anywhere
+  document.addEventListener("click", goFullscreen, { once: true });
 </script>
 
 
   
 
-  
-  
 </body>
 </html>
