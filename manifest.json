@@ -19,7 +19,8 @@
     }
   ],
   "display_override": [
-    "window-controls-overlay"
+    "fullscreen",
+    "standalone"
   ],
   "lang": "en",
   "dir": "auto",
