@@ -2,7 +2,9 @@
   "name": "Down Stream",
   "short_name": "Stream",
   "start_url": "index.html?fullscreen=true",
-  "display": "fullscreen", 
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen"],
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
   "orientation": "portrait",
@@ -18,12 +20,10 @@
       "type": "image/png"
     }
   ],
-  "display_override": [
-    "fullscreen"
-  ],
   "lang": "en",
   "dir": "auto",
-  "categories": [
-    "games"
-  ]
+  "categories": ["games"],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope_extensions": []
 }
