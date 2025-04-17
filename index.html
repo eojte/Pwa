@@ -274,7 +274,7 @@
   function spawnObstacle() {
     if (gameOver) return;
     const size = Math.random() * 20 + 10;
-    const x = Math.random() * (canvas.width - 70 - size) + 20;
+    const x = Math.random() * (canvas.width - 65 - size) + 20;
     const type = ["square", "pentagon", "triangle"][Math.floor(Math.random() * 3)];
     obstacles.push({ x, y: -size, size, type, speed });
 
