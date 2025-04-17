@@ -3,11 +3,11 @@ name: Build TWA APK
 on:
   push:
     branches:
-      - main  # Trigger when you push to the "main" branch
+      - main  # Trigger the workflow when changes are pushed to the "main" branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Build the project on Ubuntu
+    runs-on: ubuntu-latest  # Build on Ubuntu
 
     steps:
       # Step 1: Checkout the repository
@@ -35,9 +35,13 @@ jobs:
         run: |
           bubblewrap build
 
-      # Step 6: Upload APK as an artifact (optional)
+      # Step 6: List files in output directory to verify APK existence
+      - name: List files in output directory
+        run: ls -la ./output  # Make sure the APK exists in the output folder
+
+      # Step 7: Upload APK as an artifact
       - name: Upload APK as an artifact
         uses: actions/upload-artifact@v2
         with:
           name: twa-apk
-          path: ./output/app-release.apk  # Path to the generated APK file
+          path: ./output/app-release.apk  # Ensure the path to the APK is correct
