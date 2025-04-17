@@ -1,7 +1,7 @@
 {
   "name": "Down Stream",
   "short_name": "Stream",
-  "start_url": "index.html?fullscreen=true",
+  "start_url": "index.html?fullscreen=true"
   "display": "fullscreen", 
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
