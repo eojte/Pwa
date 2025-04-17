@@ -1,7 +1,7 @@
 {
   "name": "Down Stream",
   "short_name": "Stream",
-  "start_url": "index.html?fullscreen=true",
+  "start_url": "/Pwa/index.html?fullscreen=true",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [
