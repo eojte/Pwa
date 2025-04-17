@@ -410,6 +410,23 @@
   }
 </script>
 
+<script>
+  window.addEventListener("load", () => {
+    const elem = document.documentElement;
+    
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().catch(console.warn);
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  });
+</script>
+
+
+  
+
   
   
 </body>
