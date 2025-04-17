@@ -3,7 +3,7 @@
   "short_name": "Stream",
   "start_url": "index.html?fullscreen=true",
   "scope": "./",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "display_override": [
     "window-controls-overlay",
     "fullscreen",
