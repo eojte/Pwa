@@ -401,6 +401,20 @@
       .catch(err => console.error('Service Worker registration failed:', err));
   }
 </script>
+<script>
+  // Auto-attempt fullscreen on user tap (required for mobile browsers)
+  document.addEventListener('click', () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) elem.requestFullscreen().catch(console.log);
+    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); // Safari fallback
+  });
+
+  // Also try on game start (may not work due to browser restrictions)
+  function startGame() {
+    document.documentElement.requestFullscreen?.().catch(console.log);
+    // ... rest of your existing startGame() code ...
+  }
+</script>
 
   
   
