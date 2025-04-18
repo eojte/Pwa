@@ -40,11 +40,6 @@
       "src": "/Pwa/sc1.png",  // Path to screenshot 1
       "sizes": "360x640",  // Adjust the size based on your screenshot
       "type": "image/png"
-    },
-    {
-      "src": "/Pwa/screenshot2.png",  // Path to screenshot 2
-      "sizes": "360x640",  // Adjust the size based on your screenshot
-      "type": "image/png"
     }
   ]
 }
