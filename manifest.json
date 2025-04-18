@@ -30,5 +30,21 @@
     "games"
   ],
   "prefer_related_applications": false,
-  "description": "A small fun arcade-indie game"
+  "description": "A small fun arcade-indie game",
+  "app_id": "com.ethan.downstream",  // Unique app ID
+  "launch_handler": {
+    "client_mode": "standalone"
+  },
+  "screenshots": [
+    {
+      "src": "/Pwa/sc1.png",  // Path to screenshot 1
+      "sizes": "360x640",  // Adjust the size based on your screenshot
+      "type": "image/png"
+    },
+    {
+      "src": "/Pwa/screenshot2.png",  // Path to screenshot 2
+      "sizes": "360x640",  // Adjust the size based on your screenshot
+      "type": "image/png"
+    }
+  ]
 }
