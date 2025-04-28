@@ -424,6 +424,23 @@
 
   // Fallback: user taps anywhere
   document.addEventListener("click", goFullscreen, { once: true });
+
+
+
+  document.addEventListener('keydown', (e) => {
+  if (e.key === "ArrowLeft") {
+    moveLeft(true);
+  } else if (e.key === "ArrowRight") {
+    moveRight(true);
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    moveLeft(false);
+    moveRight(false);
+  }
+});
 </script>
 
 
