@@ -427,21 +427,21 @@
 
 
 
-  document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', (e) => {
   if (e.key === "ArrowLeft") {
-    moveLeft(true);
+    moveDirection = -1;
   } else if (e.key === "ArrowRight") {
-    moveRight(true);
+    moveDirection = 1;
   }
 });
 
 document.addEventListener('keyup', (e) => {
-  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-    moveLeft(false);
-    moveRight(false);
+  if (e.key === "ArrowLeft" && moveDirection === -1) {
+    moveDirection = 0;
+  } else if (e.key === "ArrowRight" && moveDirection === 1) {
+    moveDirection = 0;
   }
 });
-</script>
 
 
   
